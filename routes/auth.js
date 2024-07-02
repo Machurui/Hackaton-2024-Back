@@ -35,7 +35,7 @@ router.post("/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
-      return res.json({ message: "Logged in successfully", user });
+      return res.json({ message: "Logged in successfully" });
     });
   })(req, res, next);
 });
@@ -47,6 +47,13 @@ router.get("/logout", (req, res) => {
     }
     res.json({ message: "Logged out successfully" });
   });
+});
+
+router.get('/check', function (req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.json({ message: "User is authenticated" });
+  }
+  return res.status(401).json({ message: "User is not authenticated" });
 });
 
 module.exports = router;
