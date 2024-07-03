@@ -63,4 +63,67 @@ router.get(
   }
 );
 
+router.get(
+  "/userConsumptionLast24Hours/:userID",
+  ensureAuthenticated,
+  async (req, res) => {
+    const userID = req.params.userID;
+    const simulatedDate = "2023-03-09 16:30:00";
+    var query = ""
+
+    try {
+      if (simulatedDate) {
+        query = `
+        SELECT
+          toStartOfHour(date) AS hour,
+          SUM(Wh) AS totalWh
+        FROM hackaton2024.edf
+        WHERE userID = '${userID}' AND date >= subtractDays(toDateTime('${simulatedDate}'), 1)
+        AND date <= toDateTime('${simulatedDate}')
+        GROUP BY hour
+        ORDER BY hour
+      `;
+      } else {
+        query = `
+        SELECT
+          toStartOfHour(date) AS hour,
+          SUM(Wh) AS totalWh
+        FROM hackaton2024.edf
+        WHERE userID = '${userID}' AND date >= now() - interval 1 day
+        GROUP BY hour
+        ORDER BY hour
+      `;
+      }
+
+      // Log the query to debug
+      console.log("Executing query:", query);
+
+      // Check if query is a string and not undefined
+      if (typeof query !== "string") {
+        throw new Error("Query is not a string");
+      }
+
+      // Execute the query and get the result
+      const row = await client.query({ query });
+      const resultSet = await row.json();
+
+      console.log("Query result:", resultSet);
+
+      // Transform the result to match the expected format
+      const data = resultSet.data.map((row) => ({
+        hour: row.hour,
+        totalWh: row.totalWh,
+      }));
+
+      res.json({ data });
+    } catch (error) {
+      console.error("Error executing query:", error);
+      res.status(500).json({
+        message: "Error fetching data from ClickHouse",
+        error: error.message || error,
+      });
+    }
+  }
+);
+
 module.exports = router;
