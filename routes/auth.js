@@ -34,6 +34,8 @@ router.post("/login", (req, res, next) => {
       if (err) {
         return next(err);
       }
+
+      console.log("At creation", req.isAuthenticated());
       return res.json({ message: "Logged in successfully" });
     });
   })(req, res, next);
