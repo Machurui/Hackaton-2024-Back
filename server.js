@@ -7,10 +7,10 @@ const cors = require("cors");
 const MongoStore = require("connect-mongo");
 
 const app = express();
-const mainRouter = require("./routes/index");
 
 // .env config
 dotenv.config();
+
 // Passport config
 require("./config/passport")(passport);
 
@@ -56,16 +56,22 @@ app.use(
   })
 );
 
-app.get("/", (req, res) => {
-  res.send("Smart Grid App API");
-});
-
 // Use the main router
-app.use("/api", mainRouter);
+app.use('/', require('./routes/router'));
 
 app.use(async function (req, res) {
   return res.status(404).json({ status: 404, error: "Not found" });
 });
+
+// Error handling
+process.on('unhandledRejection', (reason) => {
+  console.log('unhandledRejection', reason)
+})
+
+// Error handling
+process.on('uncaughtException', (err) => {
+  console.log('uncaughtException', err)
+})
 
 app.listen(process.env.PORT || 5000, () => {
   console.log(`Server running on port ${process.env.PORT || 5000}`);

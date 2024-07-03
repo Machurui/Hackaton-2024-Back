@@ -5,6 +5,13 @@ const ensureAuthenticated = require("../middleware/auth");
 
 const router = express.Router();
 
+/**
+     * POST /auth/register
+     * Create a new user.
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @param {Function} next - The next middleware function.
+     */
 router.post("/register", async (req, res) => {
   const { firstName, lastName, email, password, profilePicture } = req.body;
 
@@ -23,6 +30,13 @@ router.post("/register", async (req, res) => {
   }
 });
 
+/**
+     * POST /auth/login
+     * Authenticate a user.
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @param {Function} next - The next middleware function.
+     */
 router.post("/login", (req, res, next) => {
   passport.authenticate("local", (err, user, info) => {
     if (err) {
@@ -42,7 +56,14 @@ router.post("/login", (req, res, next) => {
   })(req, res, next);
 });
 
-router.get("/logout", ensureAuthenticated, (req, res) => {
+/**
+     * POST /auth/logout
+     * Log out a user.
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @param {Function} next - The next middleware function.
+     */
+router.post("/logout", ensureAuthenticated, (req, res) => {
   req.logout((err) => {
     if (err) {
       return next(err);
@@ -51,6 +72,13 @@ router.get("/logout", ensureAuthenticated, (req, res) => {
   });
 });
 
+/**
+     * GET /auth/check
+     * Check if a user is authenticated.
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @param {Function} next - The next middleware function.
+     */
 router.get("/check", function (req, res, next) {
   if (req.isAuthenticated()) {
     return res.json({ message: "User is authenticated" });
