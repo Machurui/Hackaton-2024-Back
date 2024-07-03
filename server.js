@@ -33,13 +33,7 @@ app.use(
     secret: process.env.SECRET,
     resave: false,
     saveUninitialized: false,
-    cookie: {
-      maxAge: 600000, // Session timeout of 10 minutes = 600000
-      secure: false, // Set to true if using HTTPS
-      sameSite: "none", // Strict or Lax
-      httpOnly: true,
-      partitioned: true,
-    },
+    maxAge: 600000,
   })
 );
 
