@@ -1,5 +1,4 @@
 const express = require("express");
-const bcrypt = require("bcryptjs");
 const passport = require("passport");
 const User = require("../models/User");
 
@@ -49,7 +48,7 @@ router.get("/logout", (req, res) => {
   });
 });
 
-router.get('/check', function (req, res, next) {
+router.get("/check", function (req, res, next) {
   if (req.isAuthenticated()) {
     return res.json({ message: "User is authenticated" });
   }
