@@ -3,7 +3,6 @@ const passport = require("passport");
 const User = require("../models/User");
 const ensureAuthenticated = require("../middleware/auth");
 
-
 const router = express.Router();
 
 router.post("/register", async (req, res) => {
