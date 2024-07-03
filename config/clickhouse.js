@@ -1,9 +1,12 @@
-const { ClickHouseClient, createClient } = require("@clickhouse/client");
+const { createClient } = require("@clickhouse/client");
+const dotenv = require("dotenv");
+
+dotenv.config();
 
 const client = createClient({
-  url: "http://web.exedesk.fr:8123",
-  username: "root",
-  password: "H8QRqtQseeoMYFgE",
+  url: process.env.CLICKHOUSE_URI,
+  username: process.env.CLICKHOUSE_USER,
+  password: process.env.CLICKHOUSE_PASSWORD,
   format: "json",
 });
 
