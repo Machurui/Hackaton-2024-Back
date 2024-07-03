@@ -9,7 +9,11 @@ router.get("/currentConsum", ensureAuthenticated, () => {
     return randomValue;
 });
 
+
+
 router.get("/currentProd", ensureAuthenticated, () => {
     randomValue(6000,6900);
     return randomValue;
 });
+
+module.exports=router
