@@ -8,7 +8,6 @@ module.exports = function (passport) {
       { usernameField: "email" },
       async (email, password, done) => {
         try {
-          // Match user
           const user = await User.findOne({ email });
           if (!user) {
             return done(null, false, {
@@ -16,7 +15,6 @@ module.exports = function (passport) {
             });
           }
 
-          // Match password
           const isMatch = await bcrypt.compare(password, user.password);
           if (isMatch) {
             return done(null, user);
@@ -31,15 +29,30 @@ module.exports = function (passport) {
   );
 
   passport.serializeUser((user, done) => {
-    done(null, user.id);
+    done(null, {
+      id: user.id,
+      firstName: user.firstName,
+      lastName: user.lastName,
+      email: user.email,
+      profilePicture: user.profilePicture,
+    });
   });
 
   passport.deserializeUser(async (id, done) => {
     try {
       const user = await User.findById(id);
-      done(null, user);
+      if (!user) {
+        return done(new Error("User not found"));
+      }
+      done(null, {
+        id: user.id,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        profilePicture: user.profilePicture,
+      });
     } catch (err) {
-      done(err, null);
+      done(err);
     }
   });
 };
