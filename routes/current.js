@@ -5,12 +5,12 @@ const ensureAuthenticated = require("../middleware/auth");
 const router = express.Router();
 
 /**
- * GET /current/power
- * Get the current power randomized.
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
- */
+     * GET /current/power
+     * Get the current power randomized.
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @param {Function} next - The next middleware function.
+     */
 router.get("/power", ensureAuthenticated, (req, res, next) => {
   try {
     const currentPower = randomValue(200, 9000);
@@ -21,12 +21,12 @@ router.get("/power", ensureAuthenticated, (req, res, next) => {
 });
 
 /**
- * GET /current/production
- * Get the current production and the percentage randomized.
- * @param {Object} req - The request object.
- * @param {Object} res - The response object.
- * @param {Function} next - The next middleware function.
- */
+     * GET /current/production
+     * Get the current production and the percentage randomized.
+     * @param {Object} req - The request object.
+     * @param {Object} res - The response object.
+     * @param {Function} next - The next middleware function.
+     */
 router.get("/production", ensureAuthenticated, (req, res, next) => {
   try {
     const currentProduction = randomValue(6000, 6900);
