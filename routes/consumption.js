@@ -19,13 +19,35 @@ router.get(
     const userID = req.user._id;
     console.log(req);
 
+    const simulatedDate = "2023-03-09 16:30:00";
+    var query = "";
+
     try {
-      const query = `
-        SELECT timestamp, Predictions, Actuals 
-        FROM hackaton2024.predict 
-        WHERE userID = '${userID}'
-        ORDER BY timestamp
-      `;
+      if (simulatedDate) {
+        query = `
+            SELECT
+              timestamp,
+              Predictions,
+              Actuals
+            FROM hackaton2024.predict
+            WHERE userID = '${userID}' 
+            AND timestamp >= subtractHours(toDateTime('${simulatedDate}'), 6)
+            AND timestamp <= toDateTime('${simulatedDate}')
+            ORDER BY timestamp
+          `;
+      } else {
+        query = `
+            SELECT
+              timestamp,
+              Predictions,
+              Actuals
+            FROM hackaton2024.predict
+            WHERE userID = '${userID}'
+            AND timestamp >= now() - interval 6 hour
+            GROUP BY timestamp
+            ORDER BY timestamp
+          `;
+      }
 
       // Log the query to debug
       //console.log("Executing query:", query);
@@ -43,6 +65,7 @@ router.get(
 
       // Calculate consumption
       let totalConsumption = 0;
+      const simulatedDate = "2024-06-07 15:30:00";
       let previousRow = null;
 
       const data = resultSet.data.map((row) => {
@@ -109,7 +132,7 @@ router.get("/last24", ensureAuthenticated, async (req, res) => {
     }
 
     // Log the query to debug
-    console.log("Executing query:", query);
+    //console.log("Executing query:", query);
 
     // Check if query is a string and not undefined
     if (typeof query !== "string") {
@@ -120,7 +143,7 @@ router.get("/last24", ensureAuthenticated, async (req, res) => {
     const row = await client.query({ query });
     const resultSet = await row.json();
 
-    console.log("Query result:", resultSet);
+    //console.log("Query result:", resultSet);
 
     // Transform the result to match the expected format
     const data = resultSet.data.map((row) => ({
