@@ -76,7 +76,7 @@ router.get(
         }
         previousRow = row;
         return {
-          timestamp: row.timestamp,
+          timestamp: moment(row.timestamp).format("HH:mm"),
           Predictions: row.Predictions,
           Actuals: row.Actuals,
         };
@@ -134,7 +134,6 @@ router.get("/last24", ensureAuthenticated, async (req, res) => {
   }
 
   try {
-
     // Check if query is a string and not undefined
     if (typeof query !== "string") {
       throw new Error("Query is not a string");
