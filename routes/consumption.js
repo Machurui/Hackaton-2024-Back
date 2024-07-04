@@ -6,7 +6,7 @@ const moment = require("moment");
 const router = express.Router();
 
 /**
- * GET /consumption/consumptionAndForecasts/:userID
+ * GET /consumption/consumptionAndForecasts/
  * Get the consumption forecasts for a user.
  * @param {Object} req - The request object.
  * @param {Object} res - The response object.
@@ -17,9 +17,8 @@ router.get(
   ensureAuthenticated,
   async (req, res) => {
     const userID = req.user._id;
-    console.log(req);
 
-    const simulatedDate = "2023-03-09 16:30:00";
+    const simulatedDate = "2024-06-07 15:30:00";
     var query = "";
 
     try {
@@ -53,9 +52,6 @@ router.get(
     }
 
     try {
-      // Log the query to debug
-      //console.log("Executing query:", query);
-
       // Check if query is a string and not undefined
       if (typeof query !== "string") {
         throw new Error("Query is not a string");
@@ -64,8 +60,6 @@ router.get(
       // Execute the query and get the result
       const row = await client.query({ query });
       const resultSet = await row.json();
-
-      //console.log("Query result:", resultSet);
 
       // Calculate consumption
       let totalConsumption = 0;
@@ -140,8 +134,6 @@ router.get("/last24", ensureAuthenticated, async (req, res) => {
   }
 
   try {
-    // Log the query to debug
-    //console.log("Executing query:", query);
 
     // Check if query is a string and not undefined
     if (typeof query !== "string") {
@@ -151,8 +143,6 @@ router.get("/last24", ensureAuthenticated, async (req, res) => {
     // Execute the query and get the result
     const row = await client.query({ query });
     const resultSet = await row.json();
-
-    //console.log("Query result:", resultSet);
 
     // Transform the result to match the expected format
     const data = resultSet.data.map((row) => ({
