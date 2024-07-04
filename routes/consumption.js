@@ -25,30 +25,34 @@ router.get(
     try {
       if (simulatedDate) {
         query = `
-            SELECT
-              timestamp,
-              Predictions,
-              Actuals
-            FROM hackaton2024.predict
-            WHERE userID = '${userID}' 
-            AND timestamp >= subtractHours(toDateTime('${simulatedDate}'), 6)
-            AND timestamp <= toDateTime('${simulatedDate}')
-            ORDER BY timestamp
-          `;
+          SELECT
+            timestamp,
+            Predictions,
+            Actuals
+          FROM hackaton2024.predict
+          WHERE userID = '${userID}' 
+          AND timestamp >= subtractHours(toDateTime('${simulatedDate}'), 6)
+          AND timestamp <= toDateTime('${simulatedDate}')
+          ORDER BY timestamp
+        `;
       } else {
         query = `
-            SELECT
-              timestamp,
-              Predictions,
-              Actuals
-            FROM hackaton2024.predict
-            WHERE userID = '${userID}'
-            AND timestamp >= now() - interval 6 hour
-            GROUP BY timestamp
-            ORDER BY timestamp
-          `;
+          SELECT
+            timestamp,
+            Predictions,
+            Actuals
+          FROM hackaton2024.predict
+          WHERE userID = '${userID}'
+          AND timestamp >= now() - interval 6 hour
+          GROUP BY timestamp
+          ORDER BY timestamp
+        `;
       }
+    } catch (error) {
+      console.error("Error generating query:", error);
+    }
 
+    try {
       // Log the query to debug
       //console.log("Executing query:", query);
 
@@ -104,6 +108,7 @@ router.get(
  */
 router.get("/last24", ensureAuthenticated, async (req, res) => {
   const userID = req.user._id;
+
   const simulatedDate = "2023-03-09 16:30:00";
   var query = "";
 
@@ -130,7 +135,11 @@ router.get("/last24", ensureAuthenticated, async (req, res) => {
         ORDER BY hour
       `;
     }
+  } catch (error) {
+    console.error("Error generating query:", error);
+  }
 
+  try {
     // Log the query to debug
     //console.log("Executing query:", query);
 
