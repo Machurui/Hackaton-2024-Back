@@ -8,13 +8,8 @@ module.exports = function (passport) {
       { usernameField: "email" },
       async (email, password, done) => {
         try {
-<<<<<<< HEAD
-          const regex = new RegExp(`^${email}$`, "i");
-          const user = await User.findOne({ email: regex });
-=======
           // Match user
           const user = await User.findOne({ email });
->>>>>>> parent of b8dd746 (Rectification indentation & ajout route get user datas)
           if (!user) {
             return done(null, false, {
               message: "That email is not registered",
