@@ -9,7 +9,8 @@ module.exports = function (passport) {
       async (email, password, done) => {
         try {
           // Match user
-          const user = await User.findOne({ email });
+          const regex = new RegExp(`^${email}$`, "i");
+          const user = await User.findOne({ email: regex });
           if (!user) {
             return done(null, false, {
               message: "That email is not registered",
