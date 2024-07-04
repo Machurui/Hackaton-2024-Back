@@ -6,79 +6,83 @@ const moment = require("moment");
 const router = express.Router();
 
 /**
-     * GET /consumption/consumptionAndForecasts/:userID
-     * Get the consumption forecasts for a user.
-     * @param {Object} req - The request object.
-     * @param {Object} res - The response object.
-     * @param {Function} next - The next middleware function.
-     */
-router.get("/consumptionAndForecasts/:userID", ensureAuthenticated, async (req, res) => {
-  const userID = req.params.userID;
+ * GET /consumption/consumptionAndForecasts/:userID
+ * Get the consumption forecasts for a user.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ */
+router.get(
+  "/consumptionAndForecasts",
+  ensureAuthenticated,
+  async (req, res) => {
+    const userID = req.user._id;
+    console.log(req);
 
-  try {
-    const query = `
+    try {
+      const query = `
         SELECT timestamp, Predictions, Actuals 
         FROM hackaton2024.predict 
         WHERE userID = '${userID}'
         ORDER BY timestamp
       `;
 
-    // Log the query to debug
-    console.log("Executing query:", query);
+      // Log the query to debug
+      //console.log("Executing query:", query);
 
-    // Check if query is a string and not undefined
-    if (typeof query !== "string") {
-      throw new Error("Query is not a string");
-    }
-
-    // Execute the query and get the result
-    const row = await client.query({ query });
-    const resultSet = await row.json();
-
-    console.log("Query result:", resultSet);
-
-    // Calculate consumption
-    let totalConsumption = 0;
-    let previousRow = null;
-
-    const data = resultSet.data.map((row) => {
-      if (previousRow) {
-        const timeDifference =
-          (new Date(row.timestamp) - new Date(previousRow.timestamp)) /
-          3600000;
-        const consumption = row.Actuals * timeDifference;
-        totalConsumption += consumption;
+      // Check if query is a string and not undefined
+      if (typeof query !== "string") {
+        throw new Error("Query is not a string");
       }
-      previousRow = row;
-      return {
-        timestamp: row.timestamp,
-        Predictions: row.Predictions,
-        Actuals: row.Actuals,
-      };
-    });
 
-    res.json({ data, totalConsumption });
-  } catch (error) {
-    console.error("Error executing query:", error);
-    res.status(500).json({
-      message: "Error fetching data from ClickHouse",
-      error: error.message || error,
-    });
+      // Execute the query and get the result
+      const row = await client.query({ query });
+      const resultSet = await row.json();
+
+      //console.log("Query result:", resultSet);
+
+      // Calculate consumption
+      let totalConsumption = 0;
+      let previousRow = null;
+
+      const data = resultSet.data.map((row) => {
+        if (previousRow) {
+          const timeDifference =
+            (new Date(row.timestamp) - new Date(previousRow.timestamp)) /
+            3600000;
+          const consumption = row.Actuals * timeDifference;
+          totalConsumption += consumption;
+        }
+        previousRow = row;
+        return {
+          timestamp: row.timestamp,
+          Predictions: row.Predictions,
+          Actuals: row.Actuals,
+        };
+      });
+
+      res.json({ data, totalConsumption });
+    } catch (error) {
+      console.error("Error executing query:", error);
+      res.status(500).json({
+        message: "Error fetching data from ClickHouse",
+        error: error.message || error,
+      });
+    }
   }
-}
 );
 
 /**
-     * GET /consumption/last24/:userID
-     * Get the consumption for the last 24 hours.
-     * @param {Object} req - The request object.
-     * @param {Object} res - The response object.
-     * @param {Function} next - The next middleware function.
-     */
-router.get("/last24/:userID", ensureAuthenticated, async (req, res) => {
-  const userID = req.params.userID;
+ * GET /consumption/last24/:userID
+ * Get the consumption for the last 24 hours.
+ * @param {Object} req - The request object.
+ * @param {Object} res - The response object.
+ * @param {Function} next - The next middleware function.
+ */
+router.get("/last24", ensureAuthenticated, async (req, res) => {
+  const userID = req.user._id;
   const simulatedDate = "2023-03-09 16:30:00";
-  var query = ""
+  var query = "";
 
   try {
     if (simulatedDate) {
@@ -132,7 +136,6 @@ router.get("/last24/:userID", ensureAuthenticated, async (req, res) => {
       error: error.message || error,
     });
   }
-}
-);
+});
 
 module.exports = router;
