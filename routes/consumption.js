@@ -6,13 +6,13 @@ const moment = require("moment");
 const router = express.Router();
 
 /**
-     * GET /consumption/forecasts/:userID
+     * GET /consumption/consumptionAndForecasts/:userID
      * Get the consumption forecasts for a user.
      * @param {Object} req - The request object.
      * @param {Object} res - The response object.
      * @param {Function} next - The next middleware function.
      */
-router.get("/forecasts/:userID", ensureAuthenticated, async (req, res) => {
+router.get("/consumptionAndForecasts/:userID", ensureAuthenticated, async (req, res) => {
   const userID = req.params.userID;
 
   try {
