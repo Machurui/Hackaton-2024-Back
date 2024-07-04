@@ -63,7 +63,6 @@ router.get(
 
       // Calculate consumption
       let totalConsumption = 0;
-      const simulatedDate = "2024-06-07 15:30:00";
       let previousRow = null;
 
       const data = resultSet.data.map((row) => {
